@@ -3,10 +3,11 @@
 Plugin Name: Referrrer Cleaner
 Plugin URI: https://github.com/Monomiir/referrer_cleaner
 Description: Redirect using intermediate HTML page to remove referrer info.
-Version: 1.0
+Version: 1.1
 Author: Monomiir
 Author URI: https://encrypt.zip
 */
+
 
 if (!defined('YOURLS_ABSPATH')) die();
 
@@ -15,6 +16,17 @@ yourls_add_action('redirect_shorturl', 'refcleaner_redirect');
 function refcleaner_redirect($args) {
     list($url, $keyword) = $args;
 
+    // 크롤러 유저 에이전트 확인 (OG 태그 수집 허용 대상)
+    $ua = $_SERVER['HTTP_USER_AGENT'] ?? '';
+    if (
+        stripos($ua, 'facebookexternalhit') !== false ||
+        stripos($ua, 'kakaotalk-scrap') !== false
+    ) {
+        // 크롤러 접근 시: 리퍼러 제거 없이 YOURLS 기본 리디렉션 흐름 유지
+        return;
+    }
+
+    // 일반 사용자의 경우: 중간 리디렉션 페이지로 Referrer 제거
     header('Content-Type: text/html; charset=UTF-8');
     header('Referrer-Policy: no-referrer');
 
@@ -36,9 +48,6 @@ function refcleaner_redirect($args) {
       align-items: center;
       height: 100vh;
       margin: 0;
-    }
-    a {
-      color: #ccc;
     }
   </style>
 </head>
