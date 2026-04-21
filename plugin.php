@@ -5,7 +5,7 @@ Plugin URI: https://github.com/Monomiir/referrer_cleaner
 Description: Redirect using intermediate HTML page to remove referrer info.
 Version: 1.1
 Author: Monomiir
-Author URI: https://encrypt.zip
+Author URI: https://467.org
 */
 
 if (!defined('YOURLS_ABSPATH')) die();
